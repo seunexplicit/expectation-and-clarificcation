@@ -1,16 +1,18 @@
 
 import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode } from 'routing-controllers';
+import { Service, Inject } from 'typedi';
 import { Sequelize } from 'sequelize';
 import { Request, Response } from 'express';
 import { AddItem, SellItem, GetItem } from '../../models/ItemModel';
 import ItemDataManipulation from '../../db/Item/item.action';
 
+@Service()
 @Controller('/:item')
 export class InventoryManagerController{
 
 	dbAction:ItemDataManipulation;
 
-	constructor(sequelize:Sequelize){
+	constructor(@Inject('sequelize') sequelize:Sequelize){
 		this.dbAction = new ItemDataManipulation(sequelize);
 	}
 

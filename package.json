@@ -4,9 +4,9 @@
   "description": "An application that manages perishable inventory",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "test": "npm test",
-    "dev": "ts-node ./src/server.ts"
+    "start": "npm run clean && npm run build && node ./dist/Index.js",
+    "clean": "node ./node_modules/rimraf/bin.js dist",
+    "build": "node ./node_modules/typescript/bin/tsc"
   },
   "repository": {
     "type": "git",
@@ -33,11 +33,13 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "debug": "^4.3.1",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
-    "rimraf": "^2.6.2",
+    "rimraf": "^2.7.1",
     "routing-controllers": "^0.9.0",
     "sequelize": "^6.6.2",
+    "typedi": "^0.10.0",
     "typescript": "^4.2.3",
     "winston": "latest"
   }

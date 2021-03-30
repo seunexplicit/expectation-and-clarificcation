@@ -1,6 +1,6 @@
-const { DataTypes, Sequelize } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
-export const  ItemsModel = (sequelize:Sequelize)=>{
+export const  ItemsModel = (sequelize:any)=>{
 	return sequelize.define('items', {
 		id:{
 			allowNull: false,

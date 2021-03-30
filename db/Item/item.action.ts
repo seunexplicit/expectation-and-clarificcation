@@ -14,7 +14,7 @@ export default class ItemDataManipulation{
 	 	this.itemModel.destroy({
 			where:{
 				validityDate:{
-					[Op.le]:new Date()
+					[Op.lt]:new Date()
 				}
 			}
 		});
@@ -31,7 +31,7 @@ export default class ItemDataManipulation{
 								}
 							});
 
-		if(itemValidCount>=quantity){
+		if(itemValidCount>=value.quantity){
 			return this.itemModel.destroy({
 				where:{
 					name:itemname, 

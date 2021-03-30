@@ -1,34 +1,38 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
-import { useExpressServer } from 'routing-controllers';
+import { useExpressServer, useContainer } from 'routing-controllers';
 import { Sequelize } from 'sequelize';
-import { InventoryManagerController } from '../controllers';
 import { ItemsModel } from '../../db/Item/item.schema';
+import { Container } from 'typedi';
+import '../../models/environment.d';
 import path from 'path'
 import { fork } from 'child_process';
 
 export class ExpressConfig {
 	app:express.Express;
-	sequelize:Sequelize;
+	sequelize:any;
 	itemModel:any;
 	autoDelete:any = fork('../child_process/auto_delete');
 	
 	constructor() {
+		dotenv.config();
 		this.app = express();
 		this.app.use(cors());
 		this.app.use(bodyParser.json());
 		this.app.use(bodyParser.urlencoded({ extended: false }));
 		this.setUpDatabaseConnection();
-		this.autoDelete.send('autodelete', this.sequelize);
+		
 		this.setUpControllers();
 	}
 	
 	setUpControllers() {
-		const inventoryManagerController = new InventoryManagerController(this.sequelize); 
+		const controllersPath = path.resolve('dist', 'service-layer/controllers');
+		useContainer(Container); 
 		useExpressServer(this.app, 
 			{ 
-				controllers: [ inventoryManagerController ],
+				controllers: [ controllersPath+'/*.js' ],
 				cors:true
 			});
 	}
@@ -47,10 +51,11 @@ export class ExpressConfig {
 		      idle:1000
 		    }
 		  });
-
+		Container.set('sequelize', this.sequelize);
 		this.sequelize.authenticate()
 		.then(()=>{
 			ItemsModel(this.sequelize).sync(); 
+			this.autoDelete.send('autodelete', this.sequelize);
 		})
 		.catch((err:any)=>{})
 	}
