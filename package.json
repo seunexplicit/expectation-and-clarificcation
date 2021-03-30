@@ -4,7 +4,8 @@
   "description": "An application that manages perishable inventory",
   "main": "src/server.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "dev": "ts-node ./src/server.ts"
   },
   "repository": {
     "type": "git",

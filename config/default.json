@@ -1,0 +1,10 @@
+{
+    "express":{
+        "port":8081,
+        "host":"products-service"
+    },
+    "db":{
+        "url": "mongodb://127.0.0.1:27017/products"
+    },
+    "loglevel": "info"
+}
