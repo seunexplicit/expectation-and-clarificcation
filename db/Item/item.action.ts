@@ -1,16 +1,17 @@
 import { Op, Sequelize } from 'sequelize';
 import DuplicateItem from '../../lib/duplicateVar';
 import filterItem  from '../../lib/filterItem';
-import { ItemModels } from './item.schema';
+import { ItemsModel } from './item.schema';
+import { SellItem as ST, GetItem as GI, AddItem as AI} from '../../models/ItemModel';
 
-export default class ItemDataManipulation(){
+export default class ItemDataManipulation{
 	itemModel:any;
 	 constructor(private sequelize:Sequelize){
-	 	this.itemModel = ItemModels(sequelize);
+	 	this.itemModel = ItemsModel(sequelize);
 	 }
 
-	 DeleteItem():Promise<any>{
-	 	return this.itemModel.destroy({
+	 DeleteItem():void{
+	 	this.itemModel.destroy({
 			where:{
 				validityDate:{
 					[Op.le]:new Date()
@@ -19,7 +20,7 @@ export default class ItemDataManipulation(){
 		});
 	 }
 
-	async SellItem(quantity:number, itemname:string):any{
+	async SellItem(value:ST, itemname:string):Promise<any>{
 		
 		let itemValidCount = await this.itemModel.count({
 								where:{
@@ -37,7 +38,7 @@ export default class ItemDataManipulation(){
 					validityDate:{
 						[Op.gt]:new Date()
 					},
-					limit:quantity 
+					limit:value.quantity 
 				}
 			})
 		}
@@ -47,7 +48,7 @@ export default class ItemDataManipulation(){
 	}
 
 
-	async AddItem(items:ItemAdd, itemname:string):any{
+	async AddItem(items:AI, itemname:string):Promise<any>{
 		try{
 			let all_item = DuplicateItem(items, itemname);
 			return this.itemModel.create(all_item);
@@ -55,7 +56,7 @@ export default class ItemDataManipulation(){
 		catch(err){ throw err }
 	}
 
-	async GetItems(itemname:string):any{
+	async GetItems(itemname:string):Promise<GI>{
 		let items  = await this.itemModel.find({ where:{name:itemname}});
 		let filteredItem = filterItem(items);
 

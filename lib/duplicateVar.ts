@@ -1,8 +1,10 @@
-export default function variable_dupliicator(item:AddItem, itemname:string):Array<any>{
-	repeatedItems:Array<any> = [];
+import { AddItem } from '../models/ItemModel';
 
-	for(let j = 0; j<no; j++){
-		repeatedItems.push({...val, validityDate:new Date(new Date().getTime()+val.validTill), name:itemname});
+export default function variable_dupliicator(item:AddItem, itemname:string):Array<any>{
+	let repeatedItems:Array<any> = [];
+
+	for(let j = 0; j<item.quantity; j++){
+		repeatedItems.push({validityDate:new Date(new Date().getTime()+item.expiry), validTill:item.expiry, name:itemname});
 	}
 
 	return repeatedItems

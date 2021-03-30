@@ -17,7 +17,7 @@ export const  ItemsModel = (sequelize:Sequelize)=>{
 			type:DataTypes.STRING
 		},
 		validityDate:{
-			allowNull:false
+			allowNull:false,
 			type:DataTypes.DATE
 		}
 	})

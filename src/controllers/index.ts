@@ -1,9 +1,9 @@
 
-import { Controller, Param, Body, Get, Post Put, Delete, HttpCode } from 'routing-controllers';
+import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode } from 'routing-controllers';
 import { Sequelize } from 'sequelize';
 import { Request, Response } from 'express';
-import { AddItem, SellItem } from '../models/ItemModel.ts';
-import ItemDataManipulation from '../../db/item/item.action';
+import { AddItem, SellItem, GetItem } from '../../models/ItemModel';
+import ItemDataManipulation from '../../db/Item/item.action';
 
 @Controller('/:item')
 export class InventoryManagerController{
@@ -16,7 +16,7 @@ export class InventoryManagerController{
 
 	@HttpCode(200)
 	@Get('/quantity')
-	getItem(@Param('item') itemname:string;){
+	getItem(@Param('item') itemname:string){
 		return this.dbAction.GetItems(itemname); 
 		/*this.dbAction.GetItems()
 		.then((items)=>{res.status(200).send()})

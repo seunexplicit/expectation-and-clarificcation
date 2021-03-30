@@ -1,5 +1,6 @@
 export interface GetItem{
-	
+	quantity:number,
+	validTill:number|null
 }
 
 export interface SellItem{

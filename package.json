@@ -2,8 +2,9 @@
   "name": "perishable_inventory_manager",
   "version": "1.0.0",
   "description": "An application that manages perishable inventory",
-  "main": "src/server.js",
+  "main": "dist/index.js",
   "scripts": {
+    "start": "tsc && node dist/index.js",
     "test": "npm test",
     "dev": "ts-node ./src/server.ts"
   },
@@ -33,7 +34,11 @@
     "cookie-parser": "^1.4.5",
     "debug": "^4.3.1",
     "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "rimraf": "^2.6.2",
     "routing-controllers": "^0.9.0",
-    "typescript": "^4.2.3"
+    "sequelize": "^6.6.2",
+    "typescript": "^4.2.3",
+    "winston": "latest"
   }
 }

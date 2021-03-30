@@ -1,6 +1,6 @@
 export default function filter_item(items:Array<any>):any{
 	
-	let filterItems = [];
+	let filterItems:Array<any> = [];
 	let maximumValidTime =  0;
 	let timeIndex = 0;
 	let count  = 0;

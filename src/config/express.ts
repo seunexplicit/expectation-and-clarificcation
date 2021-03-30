@@ -1,19 +1,18 @@
-import * as express from 'express';
-import { Express, Request, Response } from 'express';
-import * as cors from 'cors';
-import * as bodyParser from 'body-parser';
+import express, { Express, Request, Response } from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 import { useExpressServer } from 'routing-controllers';
 import { Sequelize } from 'sequelize';
 import { InventoryManagerController } from '../controllers';
-import { ItemSchema } from '../../db/item/item.schema';
-import
-import * as path from 'path'
+import { ItemsModel } from '../../db/Item/item.schema';
+import path from 'path'
 import { fork } from 'child_process';
 
 export class ExpressConfig {
 	app:express.Express;
 	sequelize:Sequelize;
 	itemModel:any;
+	autoDelete:any = fork('../child_process/auto_delete');
 	
 	constructor() {
 		this.app = express();
@@ -21,12 +20,11 @@ export class ExpressConfig {
 		this.app.use(bodyParser.json());
 		this.app.use(bodyParser.urlencoded({ extended: false }));
 		this.setUpDatabaseConnection();
-		fork('').send('autodelete', '');
+		this.autoDelete.send('autodelete', this.sequelize);
 		this.setUpControllers();
 	}
 	
 	setUpControllers() {
-		const controllers = path.resolve('dist', 'controllers');
 		const inventoryManagerController = new InventoryManagerController(this.sequelize); 
 		useExpressServer(this.app, 
 			{ 
@@ -45,16 +43,16 @@ export class ExpressConfig {
 		    dialect:'mysql',
 		    pool:{
 		      max:5,
-		      min:0
+		      min:0,
 		      idle:1000
 		    }
 		  });
 
 		this.sequelize.authenticate()
 		.then(()=>{
-			ItemSchema(this.sequelize).sync(); 
+			ItemsModel(this.sequelize).sync(); 
 		})
-		.catch((err)=>{})
+		.catch((err:any)=>{})
 	}
 
 	clientErrorHandler(err:any,req:Request,res:Response,next:Function):void{
