@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 export const  ItemsModel = (sequelize:any)=>{
-	return sequelize.define('items', {
+	return sequelize.define('Items', {
 		id:{
 			allowNull: false,
 			autoIncrement: true,

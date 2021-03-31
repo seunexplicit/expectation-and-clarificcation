@@ -1,7 +1,6 @@
 
 import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode } from 'routing-controllers';
 import { Service, Inject } from 'typedi';
-import { Sequelize } from 'sequelize';
 import { Request, Response } from 'express';
 import { AddItem, SellItem, GetItem } from '../../models/ItemModel';
 import ItemDataManipulation from '../../db/Item/item.action';
@@ -12,8 +11,8 @@ export class InventoryManagerController{
 
 	dbAction:ItemDataManipulation;
 
-	constructor(@Inject('sequelize') sequelize:Sequelize){
-		console.log('injected serailize '+sequelize)
+	constructor(@Inject('sequelize') sequelize:any){
+		console.log('injected serailize '+ Object.keys(sequelize))
 		this.dbAction = new ItemDataManipulation(sequelize);
 	}
 
@@ -21,9 +20,6 @@ export class InventoryManagerController{
 	@Get('/quantity')
 	getItem(@Param('item') itemname:string){
 		return this.dbAction.GetItems(itemname); 
-		/*this.dbAction.GetItems()
-		.then((items)=>{res.status(200).send()})
-		.catch((err)=>{})*/
 	}
 
 	@Post('/add')

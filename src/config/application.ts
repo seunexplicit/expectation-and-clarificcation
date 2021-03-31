@@ -6,7 +6,7 @@ export class Application {
 	server: any; 
 	express: ExpressConfig;
 	
-	constructor() {
+	constructor(){
 		this.express = new ExpressConfig();
 		const port = process.env.PORT || 8081;
 		const debugPort  = 5058; 

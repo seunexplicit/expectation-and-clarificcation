@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run clean && npm run build && node ./dist/src/index.js",
     "clean": "node ./node_modules/rimraf/bin.js dist",
-    "build": "node ./node_modules/typescript/bin/tsc"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -24,12 +24,6 @@
   },
   "homepage": "https://github.com/seunexplicit/expectation-and-clarificcation#readme",
   "dependencies": {
-    "@types/body-parser": "^1.19.0",
-    "@types/config": "^0.0.38",
-    "@types/cors": "^2.8.10",
-    "@types/debug": "^4.1.5",
-    "@types/express": "^4.17.11",
-    "@types/node": "^14.14.37",
     "body-parser": "^1.19.0",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
@@ -38,13 +32,22 @@
     "debug": "^4.3.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.2.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^2.7.1",
     "routing-controllers": "^0.9.0",
     "sequelize": "^6.6.2",
     "typedi": "^0.10.0",
-    "typescript": "^4.2.3",
     "winston": "latest"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/config": "^0.0.38",
+    "@types/cors": "^2.8.10",
+    "@types/debug": "^4.1.5",
+    "@types/dotenv": "^6.1.0",
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.37",
+    "typescript": "^4.2.3"
   }
 }

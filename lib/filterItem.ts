@@ -7,7 +7,7 @@ export default function filter_item(items:Array<any>):any{
 
 	items.forEach((item, index)=>{
 
-		if(new Date(new Date(item.createdAt).getTime()+item.validTill)>new Date()){
+		if(new Date(item.validityDate)>new Date()){
 			if(count===0){
 				maximumValidTime = item.validTill;
 				timeIndex = index;
