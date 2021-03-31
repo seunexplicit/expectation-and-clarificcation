@@ -29,6 +29,7 @@ export class ExpressConfig {
 	setUpControllers() {
 		const controllersPath = path.resolve('dist', 'src/controllers');
 		useContainer(Container); 
+		Container.set('sequelize', this.Item);
 		useExpressServer(this.app, 
 			{ 
 				controllers: [ controllersPath+'/*.js' ],
@@ -50,12 +51,10 @@ export class ExpressConfig {
 		      idle:1000
 		    }
 		  });
-
 		this.Item = ItemsModel(this.sequelize);
-		Container.set('sequelize', this.Item);
-		
 		this.sequelize.sync()
 		.then((connection:any)=>{
+			console.log('i tolf u am going to get here');
 			logger.info('db connection successful '+connection)
 		})
 		.catch((error:any)=>{ logger.info('an error occur '+error) })

@@ -3,7 +3,7 @@ import DuplicateItem from '../../lib/duplicateVar';
 import filterItem  from '../../lib/filterItem';
 import { SellItem as ST, GetItem as GI, AddItem as AI} from '../../models/ItemModel';
 
-export default class ItemDataManipulation{
+export class ItemDataManipulation{
 	itemModel:any;
 	 constructor(private ItemModel:any){
 	 	this.itemModel = ItemModel
@@ -52,7 +52,8 @@ export default class ItemDataManipulation{
 	async AddItem(items:AI, itemname:string):Promise<any>{
 		try{
 			let all_item = DuplicateItem(items, itemname);
-			return this.itemModel.bulkCreate(all_item);
+			await this.itemModel.bulkCreate(all_item);
+			return {};
 		}
 		catch(err){ throw err }
 	}

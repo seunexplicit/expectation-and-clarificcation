@@ -3,9 +3,10 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { Sequelize } from 'sequelize';
 import { ItemsModel } from '../db/Item/item.schema';
-import ItemDataManipulation from '../db/Item/item.action';
+import { ItemDataManipulation } from '../db/Item/item.action';
 import sinon from 'sinon';
-import { ExpressConfig } from '../src/config/express'; 
+import { ExpressConfig } from '../src/config/express';
+import * as DbCon from '../src/child_processes/auto_delete'; 
 import  ItemsServer  from '../src';
 const sequelize = new Sequelize("sqlite::memory:");
 const itemModel = ItemsModel(sequelize);
@@ -13,38 +14,43 @@ chai.use(chaiHttp);
 
 const expect = chai.expect;
 
-describe('prime number tester', function(){
+describe('perishable_inventory_manager test api', function(){
     let startDate:any;
     let stubExpressConfig:any;
     let stubDataManipulation:any;
+    let dcFake = sinon.fake();
+    sinon.replace(DbCon, 'databaseConnection', dcFake)
 
-    before( async ()=>{
+    before(async ()=>{
         await itemModel.sync();
         stubExpressConfig = sinon.stub(ExpressConfig.prototype, 'setUpDatabaseConnection').callsFake(()=>{});
-        stubDataManipulation = sinon.createStubInstance(ItemDataManipulation, {itemModel:itemModel})
+        stubDataManipulation = sinon.stub(ExpressConfig, 'prototype').yieldsTo("constructor", itemModel);
+        //console.log(typeof ItemDataManipulation, Object.keys(ItemDataManipulation.default), 'ItemDataManipulation.prototype');
+       	
+        /*function ItemModelFuncMock(){
+        	this.itemModel = itemModel;
+        }
+       	sinon.stub(ItemDataManipulation.prototype, 'constructor').get((itemModel)=>{
+        	return ItemModelFuncMock;
+        })*/	
         startDate = new Date().getTime();
-    });
-    after(async ()=>{
-        await itemModel.drop();
-        stubExpressConfig.restore();
-        stubDataManipulation.restore();
+        
     })
 
-	it('1: expect post to /foo/add request be successful', async function(done){
-        const response = await chai.request(ItemsServer).post('/foo/add')
-                            .send({expiry:startDate + 10000, quantity:10});
+	it('1: expect post to /foo/add request be successful', async()=>{
+        const response = await chai.request(ItemsServer).post('/foo/add').send({expiry:startDate + 10000, quantity:10});
         expect(response).to.have.status(200);
         expect(response.body).to.be.empty;
-        done();
-    });
+        
+    })
     it('2: expect get to /foo/quantity request be successful', function(done){
        setTimeout(async ()=>{
             const response = await chai.request(ItemsServer).get('/foo/quantity')
             expect(response.body).to.have.property('quantity', 10);
             expect(response.body).to.have.property('validTill', startDate+10000);
-            done();
+            done()
        }, 5000) 
-    });
+    })
     it('3: expect post to /foo/add request be successful', function(done){
         setTimeout(async ()=>{
             const response = await chai.request(ItemsServer).post('/foo/add')
@@ -96,107 +102,19 @@ describe('prime number tester', function(){
             done()
         }, 20000)
     });
-    it('9: expect post to /bar/add request be successful', async function(done){
+    it('9: expect post to /bar/add request be successful', async function(){
         const response = await chai.request(ItemsServer).post('/bar/add')
                                 .send({expiry:startDate + 10000, quantity:10});
         expect(response).to.have.status(200);
         expect(response.body).to.be.empty;
-        done()
     });
-    it('10: expect post to /bar/add request be successful', function(done){
-        setTimeout(async()=>{
-            const response = await chai.request(ItemsServer).post('/bar/add')
-                                .send({expiry:startDate + 15000, quantity:10});
-            expect(response).to.have.status(200);
-            expect(response.body).to.be.empty;
-            done()
-        }, 1000)
+
+     after(async ()=>{
+        await itemModel.drop();
+        stubExpressConfig.restore();
+        stubDataManipulation.restore();
         
-    });
-    it('11: expect post to /bar/add request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).post('/bar/add')
-                                .send({expiry:startDate + 20000, quantity:10});
-            expect(response).to.have.status(200);
-            expect(response.body).to.be.empty;
-            done()
-        }, 2000)
-        
-    });
-    it('12: expect get to /bar/quantity request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).get('/bar/quantity')
-            expect(response.body).to.have.property('quantity', 30);
-            expect(response.body).to.have.property('validTill', startDate+10000);
-            done()
-        }, 3000)
-        
-    });
-    it('13: expect post to /bar/sell request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).post('/bar/sell/')
-                                .send({quantity:5});
-            expect(response).to.have.status(200);
-            expect(response.body).to.be.empty;
-            done();
-        }, 5000)
-        
-    });
-    it('14: expect get to /bar/quantity request be successful', function(done){
-        setTimeout(async ()=>{
-             const response = await chai.request(ItemsServer).get('/bar/quantity')
-             expect(response.body).to.have.property('quantity', 25);
-             expect(response.body).to.have.property('validTill', startDate+10000);
-             done();
-        }, 7000)
-       
-    });
-    it('15: expect get to /bar/quantity request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).get('/bar/quantity')
-            expect(response.body).to.have.property('quantity', 20);
-            expect(response.body).to.have.property('validTill', startDate+15000);
-            done();
-        }, 10000)
-        
-    });
-    it('16: expect post to /bar/sell request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).post('/bar/sell')
-                            .send({quantity:13});
-            expect(response).to.have.status(200);
-            expect(response.body).to.be.empty;
-            done();
-        }, 13000)
-        
-    });
-     it('17: expect get to /bar/quantity request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).get('/bar/quantity')
-            expect(response.body).to.have.property('quantity', 7);
-            expect(response.body).to.have.property('validTill', startDate+20000);
-            done();
-        }, 14000)
-        
-    });
-     it('18: expect get to /bar/quantity request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).get('/bar/quantity')
-            expect(response.body).to.have.property('quantity', 7);
-            expect(response.body).to.have.property('validTill', startDate+20000);
-            done();
-        }, 17000)
-        
-    });
-     it('19: expect get to /bar/quantity request be successful', function(done){
-        setTimeout(async ()=>{
-            const response = await chai.request(ItemsServer).get('/bar/quantity')
-            expect(response.body).to.have.property('quantity', 0);
-            expect(response.body).to.have.property('validTill', null);
-            done();
-        }, 20000)
-        
-    });
+    })
 
 	// it('expect error if no param set', function(done){
 	// 	chai.request(server)
@@ -205,7 +123,7 @@ describe('prime number tester', function(){
 	// 		expect(res.body).to.be.empty;
 	// 		expect(res).to.have.status(401);
 	// 		expect(res).to.have.property('text', 'index route / unauthorized');
-	// 		done();
+	// 		
 	// 	})
 	// })
 
@@ -216,7 +134,7 @@ describe('prime number tester', function(){
 	// 		expect(res.body).to.be.empty;
 	// 		expect(res).to.have.status(402);
 	// 		expect(res).to.have.property('text', 'require an integer Value');
-	// 		done();
+	// 		
 	// 	})
 	// })
 })

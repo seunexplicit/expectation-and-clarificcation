@@ -1,13 +1,13 @@
-import ItemDataManipulation from '../../db/Item/item.action';
+import { ItemDataManipulation } from '../../db/Item/item.action';
 import { Sequelize } from 'sequelize';
 import { ItemsModel } from '../../db/Item/item.schema';
 
 let item:any;
-function databaseConnection(){
+export function databaseConnection(){
 	let sequelize = new Sequelize(
 		  'mysql', 
 		  process.env.DATABASE_USER,
-		  process.env.DATABASE_PASSWORD, {
+		  process.env.DATABASE_PASSWOD, {
 		    host:'localhost',
 		    dialect:'mysql',
 		    pool:{

@@ -3,7 +3,7 @@ import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode } from 'routi
 import { Service, Inject } from 'typedi';
 import { Request, Response } from 'express';
 import { AddItem, SellItem, GetItem } from '../../models/ItemModel';
-import ItemDataManipulation from '../../db/Item/item.action';
+import { ItemDataManipulation } from '../../db/Item/item.action';
 
 @Service()
 @Controller('/:item')
