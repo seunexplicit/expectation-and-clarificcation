@@ -15,10 +15,6 @@ export const  ItemsModel = (sequelize:any)=>{
 		validTill:{
 			allowNull:false,
 			type:DataTypes.STRING
-		},
-		validityDate:{
-			allowNull:false,
-			type:DataTypes.DATE
 		}
 	})
 } 

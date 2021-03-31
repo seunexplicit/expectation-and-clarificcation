@@ -12,7 +12,6 @@ export class InventoryManagerController{
 	dbAction:ItemDataManipulation;
 
 	constructor(@Inject('sequelize') sequelize:any){
-		console.log('injected serailize '+ Object.keys(sequelize))
 		this.dbAction = new ItemDataManipulation(sequelize);
 	}
 

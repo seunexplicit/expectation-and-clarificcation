@@ -12,8 +12,8 @@ export default class ItemDataManipulation{
 	 DeleteItem():void{
 	 	this.itemModel.destroy({
 			where:{
-				validityDate:{
-					[Op.lt]:new Date()
+				validTill:{
+					[Op.lt]:new Date().getTime()
 				}
 			}
 		});
@@ -24,8 +24,8 @@ export default class ItemDataManipulation{
 		let itemValidCount = await this.itemModel.count({
 								where:{
 									name:itemname, 
-									validityDate:{
-										[Op.gt]:new Date()
+									validTill:{
+										[Op.gt]:new Date().getTime()
 									}
 								}
 							});
@@ -34,8 +34,8 @@ export default class ItemDataManipulation{
 			let destroyedItem =  await this.itemModel.destroy({
 				where:{
 					name:itemname, 
-					validityDate:{
-						[Op.gt]:new Date()
+					validTill:{
+						[Op.gt]:new Date().getTime()
 					}, 
 				},
 				limit:value.quantity
@@ -63,18 +63,17 @@ export default class ItemDataManipulation{
 						raw:true,
 						where:{
 							name:itemname,
-							validityDate:{
-								[Op.gt]:new Date()
+							validTill:{
+								[Op.gt]:new Date().getTime()
 							}
 						}
 					});
-		console.log(itemname, 'items name from item.action', items);
 		let filteredItem = filterItem(items);
 
 		if(filteredItem.filterItems.length){
 			return { 
 				quantity:filteredItem.filterItems.length,
-				validTill:filteredItem.filterItems[filteredItem.timeIndex].validityDate.getTime() 
+				validTill:filteredItem.filterItems[filteredItem.timeIndex].validTill 
 			}
 		}
 		else{
