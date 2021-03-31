@@ -6,7 +6,7 @@ import { useExpressServer, useContainer } from 'routing-controllers';
 import { Sequelize } from 'sequelize';
 import { ItemsModel } from '../../db/Item/item.schema';
 import { Container } from 'typedi';
-import '../../models/environment.d';
+import '../../models/environment_d';
 import path from 'path'
 import { fork } from 'child_process';
 
@@ -14,7 +14,7 @@ export class ExpressConfig {
 	app:express.Express;
 	sequelize:any;
 	itemModel:any;
-	autoDelete:any = fork('../child_process/auto_delete');
+	autoDelete:any = fork('src/child_processes/auto_delete');
 	
 	constructor() {
 		dotenv.config();

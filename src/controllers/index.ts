@@ -13,6 +13,7 @@ export class InventoryManagerController{
 	dbAction:ItemDataManipulation;
 
 	constructor(@Inject('sequelize') sequelize:Sequelize){
+		console.log('injected serailize '+sequelize)
 		this.dbAction = new ItemDataManipulation(sequelize);
 	}
 

@@ -1,6 +1,5 @@
 import { logger } from '../common/logger'
 import { ExpressConfig } from './express';
-import * as config from 'config';
 
 export class Application {
 	
@@ -9,9 +8,10 @@ export class Application {
 	
 	constructor() {
 		this.express = new ExpressConfig();
-		const port = config.get('express.port');
-		const debugPort  = config.get('express.debug'); 
+		const port = process.env.PORT || 8081;
+		const debugPort  = 5058; 
 		this.server = this.express.app.listen(port, () => {
+			console.log('listening at port '+port);
 			logger.info(`Server Started! Express: http://localhost:${port}`);
 		});
  	}
