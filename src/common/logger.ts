@@ -19,5 +19,6 @@ if(env === 'development') {
 }
 
 process.on('unhandledRejection', function (reason, p) {
+  //console.log(p, reason, 'system level error');
   logger.warn('system level exceptions at : ', p, ' reason: ', reason);
 });

@@ -4,7 +4,7 @@
   "description": "An application that manages perishable inventory",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha -p -j 0 --timeout 30000 -r ts-node/register './test/*.ts'",
+    "test": "mocha --timeout 30000 -r ts-node/register './test/*.ts'",
     "start": "npm run clean && npm run build && pm2 ./dist/src/index.js",
     "clean": "node ./node_modules/rimraf/bin.js dist",
     "build": "node ./node_modules/typescript/bin/tsc"

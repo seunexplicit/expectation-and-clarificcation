@@ -15,4 +15,8 @@ export class Application {
 			logger.info(`Server Started! Express: http://localhost:${port}`);
 		});
  	}
+
+ 	getServer():any{
+ 		return this.server;
+ 	}
 }

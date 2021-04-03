@@ -5,7 +5,7 @@ import { SellItem as ST, GetItem as GI, AddItem as AI} from '../../models/ItemMo
 
 export class ItemDataManipulation{
 	itemModel:any;
-	 constructor(private ItemModel:any){
+	 constructor(ItemModel:any){
 	 	this.itemModel = ItemModel
 	 }
 
@@ -20,7 +20,6 @@ export class ItemDataManipulation{
 	 }
 
 	async SellItem(value:ST, itemname:string):Promise<any>{
-		
 		let itemValidCount = await this.itemModel.count({
 								where:{
 									name:itemname, 
@@ -51,6 +50,7 @@ export class ItemDataManipulation{
 
 	async AddItem(items:AI, itemname:string):Promise<any>{
 		try{
+			console.log(this.itemModel, 'this.itemModel')
 			let all_item = DuplicateItem(items, itemname);
 			await this.itemModel.bulkCreate(all_item);
 			return {};

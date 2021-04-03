@@ -1,27 +1,9 @@
 import { ItemDataManipulation } from '../../db/Item/item.action';
 import { Sequelize } from 'sequelize';
 import { ItemsModel } from '../../db/Item/item.schema';
+import { CreateConnection } from '../config/connection';
 
-let item:any;
-export function databaseConnection(){
-	let sequelize = new Sequelize(
-		  'mysql', 
-		  process.env.DATABASE_USER,
-		  process.env.DATABASE_PASSWOD, {
-		    host:'localhost',
-		    dialect:'mysql',
-		    pool:{
-		      max:5,
-		      min:0,
-		      idle:1000
-		    }
-		  });
-
-	item = ItemsModel(sequelize);
-	sequelize.sync()
-}
-
-databaseConnection();
+const item:any = CreateConnection().ItemsModel;
 
 process.on('message', (msg)=>{
 	if(msg.m==='autodelete'){

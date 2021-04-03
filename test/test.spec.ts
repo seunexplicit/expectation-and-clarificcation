@@ -6,10 +6,11 @@ import { ItemsModel } from '../db/Item/item.schema';
 import { ItemDataManipulation } from '../db/Item/item.action';
 import sinon from 'sinon';
 import { ExpressConfig } from '../src/config/express';
-import * as DbCon from '../src/child_processes/auto_delete'; 
 import  ItemsServer  from '../src';
+import * as CreateConnection  from '../src/config/connection';
 const sequelize = new Sequelize("sqlite::memory:");
 const itemModel = ItemsModel(sequelize);
+sequelize.sync();
 chai.use(chaiHttp);
 
 const expect = chai.expect;
@@ -18,22 +19,16 @@ describe('perishable_inventory_manager test api', function(){
     let startDate:any;
     let stubExpressConfig:any;
     let stubDataManipulation:any;
-    let dcFake = sinon.fake();
-    sinon.replace(DbCon, 'databaseConnection', dcFake)
+    // let dcFake = sinon.fake();
 
     before(async ()=>{
-        await itemModel.sync();
-        stubExpressConfig = sinon.stub(ExpressConfig.prototype, 'setUpDatabaseConnection').callsFake(()=>{});
-        stubDataManipulation = sinon.stub(ExpressConfig, 'prototype').yieldsTo("constructor", itemModel);
-        //console.log(typeof ItemDataManipulation, Object.keys(ItemDataManipulation.default), 'ItemDataManipulation.prototype');
-       	
-        /*function ItemModelFuncMock(){
-        	this.itemModel = itemModel;
-        }
-       	sinon.stub(ItemDataManipulation.prototype, 'constructor').get((itemModel)=>{
-        	return ItemModelFuncMock;
-        })*/	
+        // stubExpressConfig = sinon.stub(ExpressConfig.prototype, 'setUpDatabaseConnection').callsFake(()=>{});
+        // stubDataManipulation = sinon.stub(ExpressConfig, 'prototype').yieldsTo("constructor", itemModel);	
         startDate = new Date().getTime();
+        let fakeconnection = sinon.fake(()=>{
+            return {itemsModl:itemModel}
+        });
+        stubDataManipulation = sinon.replace(CreateConnection, 'CreateConnection', fakeconnection);
         
     })
 
@@ -58,7 +53,7 @@ describe('perishable_inventory_manager test api', function(){
             expect(response).to.have.status(200);
             expect(response.body).to.be.empty;
             done()
-        }, 7000)
+        }, 2000)
     });
     it('4: expect get to /foo/quantity request be successful', function(done){
         setTimeout(async ()=>{
@@ -67,7 +62,7 @@ describe('perishable_inventory_manager test api', function(){
             expect(response.body).to.have.property('quantity', 15);
             expect(response.body).to.have.property('validTill', startDate+10000);
             done()
-        }, 8000)
+        }, 1000)
     });
     it('5: expect get to /foo/quantity request be successful', function(done){
         setTimeout(async ()=>{
@@ -75,7 +70,7 @@ describe('perishable_inventory_manager test api', function(){
             expect(response.body).to.have.property('quantity', 5);
             expect(response.body).to.have.property('validTill', startDate+20000);
             done()
-        }, 10000) 
+        }, 2000) 
     });
     it('6: expect post to /foo/sell request be successful', function(done){
         setTimeout(async ()=>{
@@ -84,7 +79,7 @@ describe('perishable_inventory_manager test api', function(){
             expect(response).to.have.status(200);
             expect(response.body).to.be.empty;
             done()
-        }, 12000)
+        }, 2000)
     });
     it('7: expect get to /foo/quantity request be successful', function(done){
         setTimeout(async ()=>{
@@ -92,7 +87,7 @@ describe('perishable_inventory_manager test api', function(){
             expect(response.body).to.have.property('quantity', 2);
             expect(response.body).to.have.property('validTill', startDate+20000);
             done()
-        }, 13000)
+        }, 1000)
     });
     it('8: expect get to /foo/quantity request be successful', function(done){
         setTimeout(async ()=>{
@@ -100,18 +95,12 @@ describe('perishable_inventory_manager test api', function(){
             expect(response.body).to.have.property('quantity', 0);
             expect(response.body).to.have.property('validTill', null);
             done()
-        }, 20000)
-    });
-    it('9: expect post to /bar/add request be successful', async function(){
-        const response = await chai.request(ItemsServer).post('/bar/add')
-                                .send({expiry:startDate + 10000, quantity:10});
-        expect(response).to.have.status(200);
-        expect(response.body).to.be.empty;
+        }, 7000)
     });
 
      after(async ()=>{
         await itemModel.drop();
-        stubExpressConfig.restore();
+        // stubExpressConfig.restore();
         stubDataManipulation.restore();
         
     })
