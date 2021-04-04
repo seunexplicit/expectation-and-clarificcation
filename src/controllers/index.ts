@@ -1,5 +1,5 @@
 
-import { Controller, Param, Body, Get, Post, Put, Delete, HttpCode } from 'routing-controllers';
+import { Controller, Param, Body, Get, Post, HttpCode } from 'routing-controllers';
 import { Service, Inject } from 'typedi';
 import { Request, Response } from 'express';
 import { AddItem, SellItem, GetItem } from '../../models/ItemModel';
@@ -23,7 +23,6 @@ export class InventoryManagerController{
 
 	@Post('/add')
 	addItem(@Param('item') itemname:string, @Body() value:AddItem){
-		console.log('yipeeeeeeee i got here' )
 		return this.dbAction.AddItem(value, itemname);
 	}
 

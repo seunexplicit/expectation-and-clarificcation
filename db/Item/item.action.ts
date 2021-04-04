@@ -50,16 +50,14 @@ export class ItemDataManipulation{
 
 	async AddItem(items:AI, itemname:string):Promise<any>{
 		try{
-			console.log(this.itemModel, 'this.itemModel')
 			let all_item = DuplicateItem(items, itemname);
-			await this.itemModel.bulkCreate(all_item);
+			this.itemModel.bulkCreate(all_item);
 			return {};
 		}
 		catch(err){ throw err }
 	}
 
 	async GetItems(itemname:string):Promise<GI>{
-
 		let items  = await this.itemModel.findAll({ 
 						raw:true,
 						where:{
@@ -74,7 +72,7 @@ export class ItemDataManipulation{
 		if(filteredItem.filterItems.length){
 			return { 
 				quantity:filteredItem.filterItems.length,
-				validTill:filteredItem.filterItems[filteredItem.timeIndex].validTill 
+				validTill:Number(filteredItem.filterItems[filteredItem.timeIndex].validTill) 
 			}
 		}
 		else{

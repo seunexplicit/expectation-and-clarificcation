@@ -2,11 +2,12 @@
 import { Sequelize } from 'sequelize';
 import { ItemsModel } from '../../db/Item/item.schema';
 
-export function CreateConnection(){
+export async function CreateConnection(){
+
 	let sequelize = new Sequelize(
 		  'mysql', 
 		  process.env.DATABASE_USER,
-		  process.env.DATABASE_PASSWORD, {
+		  process.env.DATABASE_PASWORD, {
 		    host:'localhost',
 		    dialect:'mysql',
 		    pool:{
@@ -17,6 +18,10 @@ export function CreateConnection(){
 		 });
 
 	let Items = ItemsModel(sequelize);
-	sequelize.sync();
+	const queryInterface = sequelize.getQueryInterface();
+	// queryInterface.removeColumn('Items', 'validityDate');
+	sequelize.sync()
+	.then((pass)=>{})
+	.catch((error)=>{console.log(error, 'error')});
 	return {itemsModel:Items};
 }

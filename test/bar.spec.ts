@@ -1,17 +1,17 @@
 
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { Sequelize } from 'sequelize';
+import { SequelizeMock } from 'sequelize-mock';
 import { ItemsModel } from '../db/Item/item.schema';
 import { ItemDataManipulation } from '../db/Item/item.action';
+import { Container } from 'typedi';
 import sinon from 'sinon';
 import { ExpressConfig } from '../src/config/express'; 
 import  ItemsServer  from '../src';
 import * as CreateConnection  from '../src/config/connection';
 
-const sequelize = new Sequelize("sqlite::memory:");
-sequelize.sync();
-const itemModel = ItemsModel(sequelize);
+const sequelize = new SequelizeMock();
+let itemModel:any;
 chai.use(chaiHttp);
 
 let itemsServer = ItemsServer.getServer();
@@ -23,31 +23,21 @@ describe('perishable_inventory_manager test api', function(){
     let stubExpressConfig:any;
     let stubDataManipulation:any;
 
-    beforeEach(async ()=>{
-        console.log(CreateConnection, typeof CreateConnection.CreateConnection);
-        //let dcFake = sinon.fake({temsModel:itemModel});
-        // let fakeconnection = sinon.fake(()=>{
-        //     return {itemsModl:itemModel}
-        // });
+    before(async ()=>{
+        sequelize.sync();
+        itemModel = ItemsModel(sequelize);
+        Container.reset('sequelize');
+        Container.set('sequelize', itemModel);
+        const fakeDbConnection = sinon.fake(()=>{
+            return itemModel;
+        })
 
-        // sinon.replace(CreateConnection, 'CreateConnection', fakeconnection);
-        // sinon.stub(CreateConnection, 'CreateConnection').callsFake(()=>{return {itemsModel:itemModel}});
-        // let fakeDatabaseConnection = sinon.fake();
-        // console.log(typeof ExpressConfig.prototype, Object.keys(ExpressConfig.prototype))
-        // const expressStubInstance = sinon.createStubInstance(ExpressConfig);
-        // expressStubInstance.setUpDatabaseConnection = sinon.stub();
-        // // stubExpressConfig = sinon.stub(ExpressConfig.prototype, 'setUpDatabaseConnection').callsFake(()=>{
-        // //     return {};
-        // // });
-        // stubDataManipulation = sinon.stub(ExpressConfig, 'prototype').yieldsTo("constructor", itemModel);	
-        startDate = new Date().getTime();
-        
+        sinon.replace(CreateConnection, 'CreateConnection', fakeDbConnection);
+        startDate = new Date().getTime();        
     })
 
     it('9: expect post to /bar/add request be successful', async function(){
-        const expressStubInstance1 = sinon.createStubInstance(ExpressConfig);
-        expressStubInstance1.setUpDatabaseConnection = sinon.stub();
-        const response = await chai.request('http://localhost:8081').post('/bar/add')
+        const response = await chai.request(itemsServer).post('/bar/add')
                                 .send({expiry:startDate + 10000, quantity:10});
         expect(response).to.have.status(200);
         expect(response.body).to.be.empty;
@@ -74,7 +64,7 @@ describe('perishable_inventory_manager test api', function(){
     });
     it('12: expect get to /bar/quantity request be successful', function(done){
         setTimeout(async ()=>{
-            const response = await chai.request(itemsServer).get('/bar/quantity')
+            const response = await chai.request(itemsServer).get('/bar/quantity');
             expect(response.body).to.have.property('quantity', 30);
             expect(response.body).to.have.property('validTill', startDate+10000);
             done()
@@ -146,13 +136,11 @@ describe('perishable_inventory_manager test api', function(){
         }, 3000)
         
     });
-
-     afterEach(async ()=>{
-        await itemModel.drop();
-        stubExpressConfig.restore();
-        stubDataManipulation.restore();
+    //  after(async ()=>{
+    //     Container.reset('sequelize');
+    //     await itemModel.drop();
         
-    })
+    // })
 })
 
 

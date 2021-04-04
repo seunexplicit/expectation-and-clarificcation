@@ -4,8 +4,8 @@
   "description": "An application that manages perishable inventory",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --timeout 30000 -r ts-node/register './test/*.ts'",
-    "start": "npm run clean && npm run build && pm2 ./dist/src/index.js",
+    "test": "mocha --timeout 20000 -r ts-node/register './test/*.ts'",
+    "start": "npm run clean && npm run build && pm2 start ./dist/src/index.js",
     "clean": "node ./node_modules/rimraf/bin.js dist",
     "build": "node ./node_modules/typescript/bin/tsc"
   },
@@ -43,7 +43,6 @@
     "routing-controllers": "^0.9.0",
     "sequelize": "^6.6.2",
     "sinon": "^10.0.0",
-    "sqlite3": "^5.0.2",
     "ts-node": "latest",
     "typedi": "^0.10.0",
     "winston": "latest"
@@ -59,6 +58,7 @@
     "@types/mocha": "latest",
     "@types/node": "^14.14.37",
     "@types/sinon": "^9.0.11",
+    "sequelize-mock": "^0.10.2",
     "typescript": "^4.2.3"
   }
 }

@@ -20,26 +20,31 @@ export class ExpressConfig {
 		this.app.use(bodyParser.json());
 		this.app.use(bodyParser.urlencoded({ extended: false }));
 		this.setUpDatabaseConnection();
-		Container.set('sequelize', this.Item);
+		
 		this.autoDelete.send({m:'autodelete'});
 		this.setUpControllers();
 	}
 	
 	setUpControllers() {
 		const controllersPath = path.resolve('dist', 'src/controllers');
+		const middlewaresPath = path.resolve('dist', 'src/middlewares');
 		useContainer(Container); 
 		useExpressServer(this.app, 
 			{ 
+				defaultErrorHandler:false,
 				controllers: [ controllersPath+'/*.js' ],
+				middlewares: [middlewaresPath + '/*.js'],
 				cors:true
 			});
 	}
 
 
-	setUpDatabaseConnection(){
-		this.Item =  CreateConnection().itemsModel;
-		console.log(this.Item, 'from setUpDatabaseConnection');
-		
+	async setUpDatabaseConnection(){
+		let ItemModel =  await CreateConnection();
+		// console.log(ItemModel, ItemModel.itemsModel, 'ItemModel.itemsModel');
+		this.Item = ItemModel.itemsModel;
+		Container.reset('sequelize');
+		Container.set('sequelize', this.Item);
 	}
 
 	clientErrorHandler(err:any,req:Request,res:Response,next:Function):void{

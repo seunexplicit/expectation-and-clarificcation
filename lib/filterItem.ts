@@ -6,8 +6,7 @@ export default function filter_item(items:Array<any>):any{
 	let count  = 0;
 
 	items.forEach((item, index)=>{
-
-		if(new Date(item.validityDate)>new Date()){
+		if(item.validTill>new Date().getTime()){
 			if(count===0){
 				maximumValidTime = item.validTill;
 				timeIndex = index;
