@@ -1,7 +1,8 @@
 
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { SequelizeMock } from 'sequelize-mock';
+import { Sequelize } from 'sequelize';
+//import { SequelizeMock } from 'sequelize-mock';
 import { ItemsModel } from '../db/Item/item.schema';
 import { ItemDataManipulation } from '../db/Item/item.action';
 import sinon from 'sinon';
@@ -10,7 +11,7 @@ import { Container } from 'typedi';
 import  ItemsServer  from '../src';
 import * as CreateConnection  from '../src/config/connection';
 console.log(SequelizeMock, 'SequelizeMock');
-const sequelize = new SequelizeMock();
+const sequelize = new Sequelize("sqlite::memory:");
 let itemModel:any;
 const itemsServer = ItemsServer.getServer();
 chai.use(chaiHttp);
@@ -24,7 +25,6 @@ describe('perishable_inventory_manager test api', function(){
     // // let dcFake = sinon.fake();
 
     before(async ()=>{
-        console.log('i run atg tgest.sp;ec before the test stgarted ----------');
         itemModel = ItemsModel(sequelize);
         await sequelize.sync();
     	Container.reset('sequelize');

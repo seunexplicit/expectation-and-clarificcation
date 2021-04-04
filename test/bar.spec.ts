@@ -1,7 +1,8 @@
 
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { SequelizeMock } from 'sequelize-mock';
+import { Sequelize } from 'sequelize';
+// import { SequelizeMock } from 'sequelize-mock';
 import { ItemsModel } from '../db/Item/item.schema';
 import { ItemDataManipulation } from '../db/Item/item.action';
 import { Container } from 'typedi';
@@ -10,7 +11,7 @@ import { ExpressConfig } from '../src/config/express';
 import  ItemsServer  from '../src';
 import * as CreateConnection  from '../src/config/connection';
 
-const sequelize = new SequelizeMock();
+const sequelize = new Sequelize("sqlite::memory:");;
 let itemModel:any;
 chai.use(chaiHttp);
 
