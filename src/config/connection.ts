@@ -8,7 +8,7 @@ export async function CreateConnection(){
 		  'mysql', 
 		  process.env.DATABASE_USER,
 		  process.env.DATABASE_PASSWORD, {
-		    host:'localhost',
+		    host:process.env.DATABASE_URL,
 		    dialect:'mysql',
 		    pool:{
 		      max:5,
