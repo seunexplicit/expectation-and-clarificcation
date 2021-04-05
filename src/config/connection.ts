@@ -4,18 +4,7 @@ import { ItemsModel } from '../../db/Item/item.schema';
 
 export async function CreateConnection(){
 
-	let sequelize = new Sequelize(
-		  'mysql', 
-		  process.env.DATABASE_USER,
-		  process.env.DATABASE_PASSWORD, {
-		    host:process.env.DATABASE_URL,
-		    dialect:'mysql',
-		    pool:{
-		      max:5,
-		      min:0,
-		      idle:1000
-		    }
-		 });
+	let sequelize = new Sequelize(process.env.CONNECTION_STRING);
 
 	let Items = ItemsModel(sequelize);
 	const queryInterface = sequelize.getQueryInterface();
