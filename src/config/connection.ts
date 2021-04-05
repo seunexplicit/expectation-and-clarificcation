@@ -21,6 +21,6 @@ export async function CreateConnection(){
 	const queryInterface = sequelize.getQueryInterface();
 	sequelize.sync()
 	.then((pass)=>{})
-	.catch((error)=>{console.log(error, 'error')});
+	.catch((error)=>{});
 	return {itemsModel:Items};
 }
