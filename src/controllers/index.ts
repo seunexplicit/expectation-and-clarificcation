@@ -1,5 +1,5 @@
 
-import { Controller, Param, Body, Get, Post, HttpCode } from 'routing-controllers';
+import { Controller, Param, Body, Get, Post, HttpCode, UseAfter } from 'routing-controllers';
 import { Service, Inject } from 'typedi';
 import { Request, Response } from 'express';
 import { AddItem, SellItem, GetItem } from '../../models/ItemModel';

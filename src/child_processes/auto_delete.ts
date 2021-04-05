@@ -6,10 +6,9 @@ import { CreateConnection } from '../config/connection';
 process.on('message', async (msg)=>{
 	const item:any = await CreateConnection();
 	if(msg.m==='autodelete'){
-		console.log(item.ItemsModel, 'item from child process');
 		setInterval(()=>{
 			new ItemDataManipulation(item.ItemsModel).DeleteItem();
-		}, 150000);	
+		}, 20000);	
 	}
 });
 

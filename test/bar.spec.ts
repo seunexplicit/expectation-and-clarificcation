@@ -2,12 +2,8 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { Sequelize } from 'sequelize';
-// import { SequelizeMock } from 'sequelize-mock';
 import { ItemsModel } from '../db/Item/item.schema';
-import { ItemDataManipulation } from '../db/Item/item.action';
 import { Container } from 'typedi';
-import sinon from 'sinon';
-import { ExpressConfig } from '../src/config/express'; 
 import  ItemsServer  from '../src';
 import * as CreateConnection  from '../src/config/connection';
 
@@ -21,19 +17,12 @@ const expect = chai.expect;
 
 describe('perishable_inventory_manager test api', function(){
     let startDate:any;
-    let stubExpressConfig:any;
-    let stubDataManipulation:any;
 
     before(async ()=>{
         sequelize.sync();
         itemModel = ItemsModel(sequelize);
         Container.reset('sequelize');
         Container.set('sequelize', itemModel);
-        const fakeDbConnection = sinon.fake(()=>{
-            return itemModel;
-        })
-
-        sinon.replace(CreateConnection, 'CreateConnection', fakeDbConnection);
         startDate = new Date().getTime();        
     })
 

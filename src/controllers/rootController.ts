@@ -1,11 +1,21 @@
 
-import { Controller, All, UnauthorizedError, HttpCode } from 'routing-controllers';
+import { Controller, All, Get, Patch, Put, Post, UnauthorizedError, HttpCode, UseAfter } from 'routing-controllers';
+import { Service } from 'typedi';
+import { NotFoundErrorHandler } from '../middlewares/throwNotFoundError';
 
+@Service()
+@HttpCode(401)
 @Controller()
+@UseAfter(NotFoundErrorHandler)
 export class RootController{
-	@HttpCode(401)
+	
+	@Get('/')
+	@Post('/')
+	@Patch('/')
+	@Put('/')
 	@All('/')
 	throwUnauthorizedError(){
-		throw new UnauthorizedError('Unauthorized: you cant access this route')
+		throw new UnauthorizedError('Unauthorized');
 	}
+
 }

@@ -7,7 +7,7 @@ export async function CreateConnection(){
 	let sequelize = new Sequelize(
 		  'mysql', 
 		  process.env.DATABASE_USER,
-		  process.env.DATABASE_PASWORD, {
+		  process.env.DATABASE_PASSWORD, {
 		    host:'localhost',
 		    dialect:'mysql',
 		    pool:{
@@ -19,7 +19,6 @@ export async function CreateConnection(){
 
 	let Items = ItemsModel(sequelize);
 	const queryInterface = sequelize.getQueryInterface();
-	// queryInterface.removeColumn('Items', 'validityDate');
 	sequelize.sync()
 	.then((pass)=>{})
 	.catch((error)=>{console.log(error, 'error')});

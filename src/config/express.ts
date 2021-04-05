@@ -8,6 +8,7 @@ import { CreateConnection } from './connection';
 import '../../models/environment_d';
 import path from 'path'
 import { fork } from 'child_process';
+import { handleNotFound } from '../middlewares/global/NotFoundError';
 
 export class ExpressConfig {
 	app:express.Express;
@@ -27,21 +28,22 @@ export class ExpressConfig {
 	
 	setUpControllers() {
 		const controllersPath = path.resolve('dist', 'src/controllers');
-		const middlewaresPath = path.resolve('dist', 'src/middlewares');
+		const middlewaresPath = path.resolve('dist', 'src/middlewares/global');
 		useContainer(Container); 
 		useExpressServer(this.app, 
 			{ 
-				defaultErrorHandler:false,
 				controllers: [ controllersPath+'/*.js' ],
 				middlewares: [middlewaresPath + '/*.js'],
+				defaultErrorHandler:false,
 				cors:true
 			});
+
+		this.app.use(handleNotFound);
 	}
 
 
 	async setUpDatabaseConnection(){
 		let ItemModel =  await CreateConnection();
-		// console.log(ItemModel, ItemModel.itemsModel, 'ItemModel.itemsModel');
 		this.Item = ItemModel.itemsModel;
 		Container.reset('sequelize');
 		Container.set('sequelize', this.Item);

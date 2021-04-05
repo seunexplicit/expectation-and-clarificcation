@@ -2,15 +2,11 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { Sequelize } from 'sequelize';
-//import { SequelizeMock } from 'sequelize-mock';
 import { ItemsModel } from '../db/Item/item.schema';
-import { ItemDataManipulation } from '../db/Item/item.action';
-import sinon from 'sinon';
-import { ExpressConfig } from '../src/config/express';
 import { Container } from 'typedi';
 import  ItemsServer  from '../src';
 import * as CreateConnection  from '../src/config/connection';
-console.log(SequelizeMock, 'SequelizeMock');
+
 const sequelize = new Sequelize("sqlite::memory:");
 let itemModel:any;
 const itemsServer = ItemsServer.getServer();
@@ -20,9 +16,6 @@ const expect = chai.expect;
 
 describe('perishable_inventory_manager test api', function(){
     let startDate:any;
-    // let stubExpressConfig:any;
-    // let stubDataManipulation:any;
-    // // let dcFake = sinon.fake();
 
     before(async ()=>{
         itemModel = ItemsModel(sequelize);
@@ -100,13 +93,13 @@ describe('perishable_inventory_manager test api', function(){
         const response = await chai.request(itemsServer).get('/foo/unavailableroute');
         expect(response.body).to.be.empty;
         expect(response).to.have.status(404);
-        expect(response.text).to.be('not found');
+        expect(response.text).to.equal('Route Not Found');
     });
     it('10: expect root / acess to be unautorized', async function(){
         const response = await chai.request(itemsServer).get('/');
         expect(response.body).to.be.empty;
         expect(response).to.have.status(401);
-        expect(response.text).to.be('Unauthorized: you cant access this route');
+        expect(response.text).to.equal('You Not Authorized To Access This Route');
     })
      after(async ()=>{
         Container.reset('sequelize');
