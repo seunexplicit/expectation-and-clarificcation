@@ -7,8 +7,8 @@ process.on('message', async (msg)=>{
 	const item:any = await CreateConnection();
 	if(msg.m==='autodelete'){
 		setInterval(()=>{
-			new ItemDataManipulation(item.ItemsModel).DeleteItem();
-		}, 20000);	
+			new ItemDataManipulation(item.itemsModel).DeleteItem();
+		}, 60000);	
 	}
 });
 

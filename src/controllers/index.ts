@@ -23,6 +23,7 @@ export class InventoryManagerController{
 
 	@Post('/add')
 	addItem(@Param('item') itemname:string, @Body() value:AddItem){
+		console.log(value, '====================================================');
 		return this.dbAction.AddItem(value, itemname);
 	}
 
