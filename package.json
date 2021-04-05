@@ -6,7 +6,7 @@
   "engines": {
     "npm": "7.7.6",
     "node": "12.19.0"
-   },
+  },
   "scripts": {
     "test": "npm run clean && npm run build && mocha --timeout 50000 -r ts-node/register './test/*.ts'",
     "start": "npm run clean && npm run build && pm2 start ./dist/src/index.js",
