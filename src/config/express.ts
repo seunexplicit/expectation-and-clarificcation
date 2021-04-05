@@ -39,6 +39,7 @@ export class ExpressConfig {
 			});
 
 		this.app.use(handleNotFound);
+		this.app.use(express.static('build'))
 	}
 
 
